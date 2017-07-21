@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mNameField = (EditText) findViewById(R.id.nameField);
         mEmailField = (EditText) findViewById(R.id.emailField);
 
+
         mFirebaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
+                }
+                else {
+                    setContentView(R.layout.activity_login);
                 }
             }
         });

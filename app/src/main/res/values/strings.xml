@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ICS491SecureProject</string>
+    <string name="app_name">Contacts by Gamma</string>
+    <string name="title_activity_display_contacts">DisplayContacts</string>
 </resources>

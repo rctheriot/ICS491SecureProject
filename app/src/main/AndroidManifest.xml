@@ -16,6 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DisplayContacts"
+            android:parentActivityName=".MainActivity" >  </activity>
+        <activity
+            android:name=".Login"
+            android:parentActivityName=".MainActivity">  </activity>
+        <activity
+            android:name=".CreateAccount"
+            android:parentActivityName=".MainActivity">  </activity>
+
+
     </application>
 
 </manifest>

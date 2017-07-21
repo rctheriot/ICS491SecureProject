@@ -34,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseAuth.getInstance().signOut();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(user.getUid()).getRef();
+        if (user != null) {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child(user.getUid()).getRef();
+        }
 
         mFirebaseBtn = (Button) findViewById(R.id.firebase_btn);
         mNameField = (EditText) findViewById(R.id.nameField);

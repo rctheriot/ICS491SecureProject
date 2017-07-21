@@ -38,46 +38,47 @@ public class DisplayContacts extends AppCompatActivity {
             mDatabase = FirebaseDatabase.getInstance().getReference().child(user.getUid()).getRef();
             mUserList = (ListView) findViewById(R.id.userList);
             mUserList.setAdapter(arrayAdapter);
+
+
+            mDatabase.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    String name = dataSnapshot.child("Name").getValue(String.class);
+                    String email = dataSnapshot.child("Email").getValue(String.class);
+                    mUsernames.add(name + "  -  " + email);
+                    String key = dataSnapshot.getKey();
+                    mKeys.add(key);
+                    arrayAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    String name = dataSnapshot.child("Name").getValue(String.class);
+                    String email = dataSnapshot.child("Email").getValue(String.class);
+                    mUsernames.add(name + "  -  " + email);
+                    String key = dataSnapshot.getKey();
+                    int index = mKeys.indexOf(key);
+                    mUsernames.set(index, name + "  -  " + email);
+                    arrayAdapter.notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
-
-        mDatabase.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String name = dataSnapshot.child("Name").getValue(String.class);
-                String email = dataSnapshot.child("Email").getValue(String.class);
-                mUsernames.add(name + "  -  " + email);
-                String key = dataSnapshot.getKey();
-                mKeys.add(key);
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                String name = dataSnapshot.child("Name").getValue(String.class);
-                String email = dataSnapshot.child("Email").getValue(String.class);
-                mUsernames.add(name + "  -  " + email);
-                String key = dataSnapshot.getKey();
-                int index = mKeys.indexOf(key);
-                mUsernames.set(index, name + "  -  " + email);
-                arrayAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
 }

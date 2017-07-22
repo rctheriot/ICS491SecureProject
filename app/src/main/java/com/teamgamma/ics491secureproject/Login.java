@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,39 +15,70 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 
 public class Login extends AppCompatActivity {
 
+    //Firebase database and autentication
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    //Text Fields
     private EditText mEmailField;
     private EditText mPasswordField;
 
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    //Buttons
+    private Button mSignInButton;
+    private Button mCreateAccountButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmailField = (EditText) findViewById(R.id.emailField);
-        mPasswordField = (EditText) findViewById(R.id.passwordField);
-
+        //Firebase authentication instance and listener
         mAuth = FirebaseAuth.getInstance();
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d("EmailPassword", "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d("Email_Password", "onAuthStateChanged:signed_in:" + user.getUid());
+                    changeToHomeScreen();
+
                 } else {
                     // User is signed out
-                    Log.d("EmailPassword", "onAuthStateChanged:signed_out");
+                    Log.d("Email_Password", "onAuthStateChanged:signed_out");
+                    Toast.makeText(Login.this, "Sign In or Create an Account", Toast.LENGTH_SHORT).show();
                 }
                 // ...
             }
         };
+
+        // Link Email/Password Fields
+        mEmailField = (EditText) findViewById(R.id.emailField);
+        mPasswordField = (EditText) findViewById(R.id.passwordField);
+
+        //Link buttons
+        mSignInButton = (Button) findViewById(R.id.signinBtn);
+
+        mCreateAccountButton = (Button) findViewById(R.id.createAccountBtn);
+
+        mSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
+
+        mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeToCreateAccount();
+            }
+        });
+
     }
 
     @Override
@@ -63,10 +95,26 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public void onSignInClick(View view) {
+    private void changeToHomeScreen() {
+        Intent intent = new Intent(this, HomePage.class);
+        startActivity(intent);
+    }
+
+    private void changeToCreateAccount() {
+        Intent intent = new Intent(this, CreateAccount.class);
+        startActivity(intent);
+    }
+
+    private void signIn() {
 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
+
+        //Check if email or password fields are 0
+        if (email.length() == 0 || password.length() == 0) {
+            Toast.makeText(Login.this, "Please enter a valid Email/Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -81,12 +129,12 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, "Failed to Login",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(Login.this, "Login Successful",
-                                    Toast.LENGTH_SHORT).show();
+                            changeToHomeScreen();
                         }
 
                     }
                 });
     }
+
 
 }

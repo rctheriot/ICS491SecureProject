@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="132dp"
         android:ems="10"
         android:hint="Enter Email"
         android:inputType="textEmailAddress"
@@ -37,16 +37,35 @@
         app:layout_constraintTop_toBottomOf="@+id/emailField" />
 
     <Button
-        android:id="@+id/loginBtn"
+        android:id="@+id/signinBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/holo_green_dark"
-        android:onClick="onSignInClick"
         android:text="Sign In"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordField" />
+
+    <Button
+        android:id="@+id/createAccountBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@android:color/holo_blue_dark"
+        android:text="Create Account"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/signinBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

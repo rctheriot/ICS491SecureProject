@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.teamgamma.ics491secureproject.DisplayContacts">
+    tools:context="com.teamgamma.ics491secureproject.DisplayChatrooms">
 
     <ListView
-        android:id="@+id/userList"
+        android:id="@+id/chatroomList"
         android:layout_width="352dp"
         android:layout_height="479dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteY="16dp" />
 </android.support.constraint.ConstraintLayout>

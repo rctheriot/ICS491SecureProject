@@ -1,0 +1,32 @@
+README
+
+Progress
+
+Completed Task:
+ - Firebase implemented
+ - Chatroom creation and functionality
+ - Account creation functionality
+
+Pending Task:
+ - Chatroom password protection
+ - Unique usernames
+ - Account creation password requirements/restrictions
+
+
+Individual Contributions
+ - Ryan:
+   - Application Development
+   - Design Documentation
+ - Kristy:
+   - Requirements Documentation
+   - Establish Design Requirements
+   - Implementation Documentation
+   - Approved Tools
+ - Anson:
+   - Requirements Documentation
+   - Quality Gates / Bug Bars
+   - Implementation Documentation
+   - Deprecated/Unsafe Function
+
+Repository Link
+https://github.com/rctheriot/ICS491SecureProject

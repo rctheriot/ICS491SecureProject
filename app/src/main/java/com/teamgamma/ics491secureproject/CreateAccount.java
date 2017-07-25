@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class CreateAccount extends AppCompatActivity {
 
     private EditText mEmailField;
@@ -89,6 +92,32 @@ public class CreateAccount extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private class PasswordValidator{
+
+        private Pattern pattern;
+        private Matcher matcher;
+
+        private static final String PASSWORD_PATTERN =
+                "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+
+        public PasswordValidator(){
+            pattern = Pattern.compile(PASSWORD_PATTERN);
+        }
+
+        /**
+         * Validate password with regular expression
+         * @param password password for validation
+         * @return true valid password, false invalid password
+         */
+        public boolean validate(final String password){
+
+            matcher = pattern.matcher(password);
+            return matcher.matches();
+
+        }
+    }
+
+
     private void addUsername(String username) {
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).getRef();
@@ -110,16 +139,23 @@ public class CreateAccount extends AppCompatActivity {
 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
+        PasswordValidator valid = new PasswordValidator();
+
+        if (!valid.validate(password)) {
+            Toast.makeText(CreateAccount.this, "Password invalid.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreateAccount.this, "Must contain (1)lowercase, (1)uppercase, (1)special symbol minimum 6 characters", Toast.LENGTH_SHORT).show();
+        return;
+        }
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("CreateAccount", "createUserWithEmail:onComplete:" + task.isSuccessful());
-
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
+                        //Check if room name is longer than 4 characters
                         if (!task.isSuccessful()) {
                             Toast.makeText(CreateAccount.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
                         } else {

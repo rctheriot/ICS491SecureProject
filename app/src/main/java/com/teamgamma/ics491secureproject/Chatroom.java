@@ -1,6 +1,7 @@
 package com.teamgamma.ics491secureproject;
 
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -66,6 +74,10 @@ public class Chatroom extends AppCompatActivity {
                     setChatTitle();
                     setUsername();
                     displayChat();
+
+                    //So we can do https request
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
 
                 } else {
                     // User is signed out
@@ -145,39 +157,25 @@ public class Chatroom extends AppCompatActivity {
         });
     }
 
-    public static class Message {
-        public String username;
-        public String message;
-        public long time;
 
-        public Message(String a, String m, long ts) {
-            username = a;
-            message = m;
-            time = ts;
-        }
-    }
-
-    private void sendMessage () {
+    private void sendMessage() {
 
         String message = mMessageField.getText().toString();
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        long timeStamp = ts.getTime();
+        String urlString =
+                "https://us-central1-ics491-3e72d.cloudfunctions.net/addMessage?" +
+                        "u=" + user.getUid().toString() +
+                        "&r=" + roomid +
+                        "&m=" + message;
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("chatrooms").child(roomid).getRef();
-        mDatabase.child("messages").push().setValue(new Message(username, message, timeStamp)).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-
-                } else {
-                    Toast.makeText(Chatroom.this, "Message Failed to Send", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
+        try {
+            URL myURL = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
+            urlConnection.getInputStream();
+            urlConnection.disconnect();
+        } catch (IOException e) { }
     }
 
-    private void changeToLogin(){
+    private void changeToLogin() {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
@@ -205,6 +203,7 @@ public class Chatroom extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 username = dataSnapshot.getValue(String.class);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 

@@ -6,27 +6,33 @@ Completed Task:
  - Firebase implemented
  - Chatroom creation and functionality
  - Account creation functionality
+ - Account creation password requirements/restrictions
+ - Chatroom password protection
+ - Server-side functions implemented for sensitive executions
 
 Pending Task:
- - Chatroom password protection
- - Unique usernames
- - Account creation password requirements/restrictions
-
+  - Chatroom password protection
+  - Unique usernames
 
 Individual Contributions
  - Ryan:
-   - Application Development
-   - Design Documentation
+    - Application Development
+    - Design Documentation
+    - Application Redesign due to security issues
+
  - Kristy:
-   - Requirements Documentation
-   - Establish Design Requirements
-   - Implementation Documentation
-   - Approved Tools
+ 	- Requirements Documentation
+   	- Establish Design Requirements
+   	- Implementation Documentation
+   	- Approved Tools
+
  - Anson:
-   - Requirements Documentation
-   - Quality Gates / Bug Bars
-   - Implementation Documentation
-   - Deprecated/Unsafe Function
+   	- Requirements Documentation
+   	- Quality Gates / Bug Bars
+   	- Implementation Documentation
+   	- Deprecated/Unsafe Function
+	- Dynamic Tool Analysis used
+	- Hacking/Pen testing of Application
 
 Repository Link
 https://github.com/rctheriot/ICS491SecureProject

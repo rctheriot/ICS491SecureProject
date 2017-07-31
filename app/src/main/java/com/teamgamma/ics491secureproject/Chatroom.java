@@ -32,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -159,8 +160,13 @@ public class Chatroom extends AppCompatActivity {
 
 
     private void sendMessage() {
-
         String message = mMessageField.getText().toString();
+        try {
+            message = URLEncoder.encode(message, "UTF-8");
+        } catch (IOException e) {
+            return;
+        }
+
         String urlString =
                 "https://us-central1-ics491-3e72d.cloudfunctions.net/addMessage?" +
                         "u=" + user.getUid().toString() +
@@ -172,7 +178,9 @@ public class Chatroom extends AppCompatActivity {
             HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
             urlConnection.getInputStream();
             urlConnection.disconnect();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+            return;
+        }
     }
 
     private void changeToLogin() {

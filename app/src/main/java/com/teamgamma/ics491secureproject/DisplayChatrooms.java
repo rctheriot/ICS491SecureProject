@@ -1,14 +1,20 @@
 package com.teamgamma.ics491secureproject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,6 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class DisplayChatrooms extends AppCompatActivity {
@@ -50,6 +60,9 @@ public class DisplayChatrooms extends AppCompatActivity {
                     // User is signed in
                     Log.d("Email_Password", "onAuthStateChanged:signed_in:" + user.getUid());
                     displayRooms();
+                    //So we can do https request
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
 
                 } else {
                     // User is signed out
@@ -71,9 +84,61 @@ public class DisplayChatrooms extends AppCompatActivity {
         mChatroomList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), Chatroom.class);
-                intent.putExtra(ROOM_MESSAGE, mKeys.get(position));
-                startActivity(intent);
+                final int pos = position;
+                final View v = view;
+                final EditText passwordInput = new EditText(DisplayChatrooms.this);
+                passwordInput.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                AlertDialog.Builder alertPassword = new AlertDialog.Builder (DisplayChatrooms.this);
+                alertPassword.setTitle("Enter Password");
+                alertPassword.setView(passwordInput);
+
+
+                alertPassword.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String password = passwordInput.getText().toString();
+                        try {
+                            password = URLEncoder.encode(password, "UTF-8");
+                        } catch (IOException e) {
+                            return;
+                        }
+
+                        String urlString =
+                                "https://us-central1-ics491-3e72d.cloudfunctions.net/roomPasswordCheck?" +
+                                        "r=" +  mKeys.get(pos) +
+                                        "&p=" + password;
+
+                        try {
+                            URL myURL = new URL(urlString);
+                            HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
+                            int code = urlConnection.getResponseCode();
+                            if (code == 200) {
+                                Intent intent = new Intent(v.getContext(), Chatroom.class);
+                                intent.putExtra(ROOM_MESSAGE, mKeys.get(pos));
+                                startActivity(intent);
+                            }
+                            else {
+                                dialog.cancel();
+                                Toast.makeText(DisplayChatrooms.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
+                            }
+                            urlConnection.disconnect();
+                        } catch (IOException e) {
+                            return;
+                        }
+
+                    }
+                });
+
+                alertPassword.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                alertPassword.show();
+
             }
         });
 

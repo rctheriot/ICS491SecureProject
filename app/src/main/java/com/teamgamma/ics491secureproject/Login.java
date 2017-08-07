@@ -15,56 +15,55 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 
+/**
+ * Signin Activity
+ * This is the activity the user views when needs to signin and when he first starts the app
+ */
 public class Login extends AppCompatActivity {
 
-    //Firebase database and autentication
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    //Text Fields
     private EditText mEmailField;
     private EditText mPasswordField;
 
-    //Buttons
     private Button mSignInButton;
     private Button mCreateAccountButton;
+
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //Firebase authentication instance and listener
+        //Get Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
+
+        //Firebase Authentication State Listener
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                //Get the user currently signed in
+                user = firebaseAuth.getCurrentUser();
+
+                //If the user is not null then show the Home Page, else ask user to login
                 if (user != null) {
-                    // User is signed in
-                    Log.d("Email_Password", "onAuthStateChanged:signed_in:" + user.getUid());
                     changeToHomeScreen();
 
                 } else {
-                    // User is signed out
-                    Log.d("Email_Password", "onAuthStateChanged:signed_out");
                     Toast.makeText(Login.this, "Sign In or Create an Account", Toast.LENGTH_SHORT).show();
                 }
                 // ...
             }
         };
 
-        // Link Email/Password Fields
+        // Bind Email/Password EditText Fields
         mEmailField = (EditText) findViewById(R.id.emailField);
         mPasswordField = (EditText) findViewById(R.id.passwordField);
 
-        //Link buttons
+        //Bind Sigin button to signIn Function
         mSignInButton = (Button) findViewById(R.id.signinBtn);
-
-        mCreateAccountButton = (Button) findViewById(R.id.createAccountBtn);
-
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +71,8 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        //Bind Sigin button to changeToCreateAccount Function
+        mCreateAccountButton = (Button) findViewById(R.id.createAccountBtn);
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,39 +96,46 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    /**
+     * Change to Homepage
+     */
     private void changeToHomeScreen() {
         Intent intent = new Intent(this, HomePage.class);
         startActivity(intent);
     }
 
+    /**
+     * Change to CreateAccount page
+     */
     private void changeToCreateAccount() {
         Intent intent = new Intent(this, CreateAccount.class);
         startActivity(intent);
     }
 
+    /**
+     * Sign in the User using Firebase Login API
+     */
     private void signIn() {
 
+        //Get  email and password from EditText fields
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
-        //Check if email or password fields are 0
+        //Check if email or password fields are not lenght 0
         if (email.length() == 0 || password.length() == 0) {
             Toast.makeText(Login.this, "Please enter a valid Email/Password", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        //Signin Through firebase API
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("EmailPassword", "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
+                        //If login successful change to homescreen, else display error message
                         if (!task.isSuccessful()) {
-                            Toast.makeText(Login.this, "Failed to Login",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "Failed to Login", Toast.LENGTH_SHORT).show();
                         } else {
                             changeToHomeScreen();
                         }

@@ -18,8 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
+/**
+ * Homepage Activity
+ * This is the activity the user views after he logins in
+ */
 public class HomePage extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -37,46 +39,53 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        //Set title of page
         setTitle("Homepage");
 
-        mUsernameText = (TextView) findViewById(R.id.usernameText);
-        //Firebase authentication instance and listener
+        //Get Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
+
+        //Firebase Authentication State Listener
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
+                //If the user is not null then show the page, else change to Login Activity
                 user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
-                    Log.d("Email_Password", "onAuthStateChanged:signed_in:" + user.getUid());
                     setHeader();
 
                 } else {
-                    // User is signed out
-                    Log.d("Email_Password", "onAuthStateChanged:signed_out");
                     changeToLogin();
                 }
                 // ...
             }
         };
 
-        mSignOutButton = (Button) findViewById(R.id.signoutBtn);
-        mViewChatroomsButton = (Button) findViewById(R.id.viewChatroomsBtn);
-        mCreateChatroomButton = (Button) findViewById(R.id.createChatroomBtn);
+        //Bind username to TextView
+        mUsernameText = (TextView) findViewById(R.id.usernameText);
 
+        //Bind SignOut button to signOut Function
+        mSignOutButton = (Button) findViewById(R.id.signoutBtn);
         mSignOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signOut();
             }
         });
+
+        //Bind Display Chatrooms button to changeToDisplayChatrooms Function
+        mViewChatroomsButton = (Button) findViewById(R.id.viewChatroomsBtn);
         mViewChatroomsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeToDisplayChatrooms();
             }
         });
+
+        //Bind Create Chatroom button to changeToCreateChatroom Function
+        mCreateChatroomButton = (Button) findViewById(R.id.createChatroomBtn);
         mCreateChatroomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,28 +109,47 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
+    /**
+     * Change to Login page
+     */
     private void changeToLogin(){
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
 
+    /**
+     * Change to Chatroom List Page
+     */
     private void changeToDisplayChatrooms() {
         Intent intent = new Intent(this, DisplayChatrooms.class);
         startActivity(intent);
     }
 
+    /**
+     * Change to CreateChatroom Page
+     */
     private void changeToCreateChatroom() {
         Intent intent = new Intent(this, CreateChatroom.class);
         startActivity(intent);
     }
 
+    /**
+     * Sign User Out
+     */
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         changeToLogin();
     }
 
+    /**
+     * Sets the header of the page to the user's Username
+     */
     private void setHeader() {
+
+        //Get the Username reference from Firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("username").getRef();
+
+        //Set value of header to username
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

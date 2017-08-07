@@ -1,5 +1,8 @@
 # ![](https://github.com/rctheriot/ICS491SecureProject/blob/master/app/src/main/res/mipmap-hdpi/ic_gammachat.png?raw=true) GammaChat README
 
+## [REPO LINK](https://github.com/rctheriot/ICS491SecureProject)
+## [WIKI LINK]{https://github.com/rctheriot/ICS491SecureProject/wiki}
+
 ## Progress 8/6/2016
 
 ### Completed Task:
@@ -64,5 +67,4 @@
 	- Dynamic Tool Analysis used
 	- Hacking/Pen testing of Application
 
-Repository Link
-https://github.com/rctheriot/ICS491SecureProject
+

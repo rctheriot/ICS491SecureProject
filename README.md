@@ -1,4 +1,4 @@
-# GammaChat README
+# ![](https://github.com/rctheriot/ICS491SecureProject/blob/master/app/src/main/res/mipmap-hdpi/ic_gammachat.png?raw=true) GammaChat README
 
 ## Progress 8/6/2016
 
@@ -7,6 +7,7 @@
 - Wiki and User Guide
 - APK Release
 - Real Device Testing
+- Icon Created
 
 ### Pending Task:
 - Unique usernames & room names
@@ -19,9 +20,9 @@
 
 - Kristy:
   - Formal Report
-	- Incident Response Plan
-	- Escalation Response Process
-	- Design Documentation
+  - Incident Response Plan
+  - Escalation Response Process
+  - Design Documentation
 
 - Anson:
 	- Final Security Review
